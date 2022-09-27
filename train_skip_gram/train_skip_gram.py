@@ -142,7 +142,7 @@ exit(0)
 ## End of validation of task 3. (please remove prints and exits after ending it)
 
 
-# 4. Training routine
+# 4. Training routine. Please run the file entirely.
 
 for epoch in range(EPOCHS):
     total_loss = 0

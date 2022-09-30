@@ -11,8 +11,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.manual_seed(42)
 np.random.seed(42)
 
-model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True).to(device)
-model.eval()
 image_batch = [Image.open('bear.png').convert('RGB'), Image.open('condor.png').convert('RGB')]
 preprocess = transforms.Compose([
     transforms.Resize(256),
@@ -23,6 +21,8 @@ preprocess = transforms.Compose([
 input_tensor = torch.stack([preprocess(image) for image in image_batch], 0).to(device)
 print(input_tensor.size())
 
+model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True).to(device)
+model.eval()
 output = model(input_tensor)
 # Tensor of shape 1000, with confidence scores over Imagenet's 1000 classes
 # The output has unnormalized scores. To get probabilities, you can run a softmax on it.

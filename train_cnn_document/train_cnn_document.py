@@ -26,10 +26,6 @@ CORPUS_SIZE = 5000
 
 ## 1. Loading data and building vocabulary and tokenizer
 
-path = './news.csv'
-news = pd.read_csv(path, header=0)[:CORPUS_SIZE]
-
-
 def preprocess_text(text):
     text = ' '.join(word.lower() for word in text.split(" "))
     text = re.sub(r"([.,!?])", r" \1 ", text)
@@ -37,42 +33,92 @@ def preprocess_text(text):
     return text
 
 
-news.title.apply(preprocess_text)
+path = './news.csv'
+
+# Task 1: Build the DataFrame to use.
+#
+# - Load the news.csv file into a pandas dataframe
+# - Apply the preprocessing function to the title column
+# - Map the categories into numbered labels
+
+
+## INSERT TASK 1 CODE HERE
+
+news = None
+
+## END TASK 1 CODE
+
+## Validation Task 1
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
+
+
+print(f'News DF columns are is {news.columns}')
+print(f'Is ? in the first title? : {"?" in news.iloc[0]["title"] == False}')
+exit(0)
+
+## End of validation of task 1. (please remove prints and exits after ending it)
+
+## 2. Building dataset with help of Vocabulary model
+
 word2vec_model = gensim.models.KeyedVectors.load_word2vec_format('emb_word2vec_format.txt')
-
-news['label'] = news.category.map({'Business': 0, 'Sports': 1, 'Sci/Tech': 2, 'World': 3})
-
 weights = torch.FloatTensor(word2vec_model.vectors).to(device)
 tokenizer = lambda x: TextBlob(x).words
 vocab_size = len(word2vec_model.index_to_key)
 
+# Task 2:
+#
+# - Implement get_maximum_review_length that takes the news DF and returns the maximum length in words of any sentence in the title column
+# - Create the X dataset iterating over the news dataset.
+#    * For every wor and every sentence in the title if the word is in the vocabulary, set the value for that word as the index
+#    * If it is not in the model, set a tensor of 0
+
+# For example, if the vocab is {cat, dog} and my df is ["My cat", "Dog is good"]
+# Then X will be: [[0,1,0], [2,0,0]]. Be sure to understand why!
+#
+
+## INSERT TASK 2 CODE HERE
 
 def get_maximum_review_length(df):
+    """ Figures out how long should the tensors be to accomodate all reviews"""
     maximum = 0
-    for ix, row in df.iterrows():
-        candidate = len(tokenizer(row.title))
-        if candidate > maximum:
-            maximum = candidate
+    # FILLME
     return maximum
-
 
 maximum = get_maximum_review_length(news)
 
 X = torch.zeros(len(news), maximum).type(torch.LongTensor).to(device)
-for index, row in news.iterrows():
-    ix = 0
-    for word in tokenizer(row.title):
-        if word not in word2vec_model:
-            representation = 0
-        else:
-            representation = word2vec_model.index_to_key.index(word)
-        X[index, ix] = representation
-        ix += 1
+# FILLME
+
+
+## END TASK 2 CODE
+
+## Validation Task 2
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
+
+print(maximum)
+print(X[0])
+exit(0)
+
+
+## End of validation of task 2. (please remove prints and exits after ending it)
+
+## 3. Build Model and validate it
+
 y = news.label
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 y_train = torch.Tensor(y_train.values).type(torch.LongTensor).to(device)
 y_test = torch.Tensor(y_test.values).type(torch.LongTensor).to(device)
 
+## Task 3: Create the News Classifier Model. It should have:
+
+# - An Embedding layer from the pretrained weights
+# - A sequence of two sets of Conv1d layer and ELU layer with a kernel size of 3
+# - A fully connected layer with a hidden dimension
+# - A final fully connected layer
+
+# Part of the task is figuring out the correct dimensions.
+
+## INSERT TASK 3 CODE HERE
 
 class NewsClassifier(nn.Module):
     def __init__(self, embedding_size, num_channels,
@@ -88,18 +134,11 @@ class NewsClassifier(nn.Module):
             pretrained_embeddings (torch.Tensor): Weights of pretraine embedding
         """
         super(NewsClassifier, self).__init__()
-        self.emb = nn.Embedding.from_pretrained(weights)
-        self.convnet = nn.Sequential(
-            nn.Conv1d(in_channels=embedding_size,
-                      out_channels=num_channels, kernel_size=3),
-            nn.ELU(),
-            nn.Conv1d(in_channels=num_channels, out_channels=num_channels,
-                      kernel_size=3, stride=2),
-            nn.ELU()
-        )
+        self.emb = None
+        self.convnet = nn.Sequential(None)
         self._dropout_p = dropout_p
-        self.fc1 = nn.Linear(num_channels, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, num_classes)
+        self.fc1 = None
+        self.fc2 = None
 
     def forward(self, x_in):
         """The forward pass of the classifier
@@ -129,6 +168,7 @@ class NewsClassifier(nn.Module):
 
         return prediction_vector
 
+## END TASK 3 CODE
 
 model = NewsClassifier(embedding_size=EMBEDDING_DIM,
                        num_channels=50,
@@ -137,8 +177,15 @@ model = NewsClassifier(embedding_size=EMBEDDING_DIM,
                        dropout_p=0.15,
                        pretrained_embeddings=weights
                        ).to(device)
-summary(model)
 
+## Validation Task 3
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
+
+print(f'Model summary: {summary(model)}')
+print(f'Prediction: {model(X[0])}')
+exit(0)
+
+## End of validation of task 3. (please remove prints and exits after ending it)
 
 def loss(y_pred, y):
     return nn.functional.nll_loss(y_pred, y)
@@ -149,6 +196,8 @@ def metric(y_pred, y):  # -> accuracy
 
 
 optimizer = torch.optim.AdamW(model.parameters())
+
+# 4. Training routine. Please run the file entirely.
 
 model.train()
 for i in range(EPOCHS):

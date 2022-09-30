@@ -24,7 +24,7 @@ EPOCHS = 250
 BATCH_SIZE = 250
 CORPUS_SIZE = 5000
 
-## 1. Loading data and building vocabulary and tokenizer
+## 1. Loading data and building the Dataframe
 
 def preprocess_text(text):
     text = ' '.join(word.lower() for word in text.split(" "))
@@ -45,7 +45,7 @@ path = './news.csv'
 ## INSERT TASK 1 CODE HERE
 
 news = None
-
+news['label'] = None
 ## END TASK 1 CODE
 
 ## Validation Task 1
@@ -96,7 +96,7 @@ X = torch.zeros(len(news), maximum).type(torch.LongTensor).to(device)
 ## This is for validation only, after you finish the task feel free to remove the prints and the exit command
 
 print(maximum)
-print(X[0])
+print(X[7])
 exit(0)
 
 
@@ -140,6 +140,8 @@ class NewsClassifier(nn.Module):
         self.fc1 = None
         self.fc2 = None
 
+## END TASK 3 CODE
+
     def forward(self, x_in):
         """The forward pass of the classifier
 
@@ -168,7 +170,6 @@ class NewsClassifier(nn.Module):
 
         return prediction_vector
 
-## END TASK 3 CODE
 
 model = NewsClassifier(embedding_size=EMBEDDING_DIM,
                        num_channels=50,
@@ -182,7 +183,7 @@ model = NewsClassifier(embedding_size=EMBEDDING_DIM,
 ## This is for validation only, after you finish the task feel free to remove the prints and the exit command
 
 print(f'Model summary: {summary(model)}')
-print(f'Prediction: {model(X[0])}')
+print(f'Prediction: {model(X[:5])}')
 exit(0)
 
 ## End of validation of task 3. (please remove prints and exits after ending it)

@@ -132,3 +132,5 @@ dmypy.json
 *.pkl
 **/*.pth
 **/*.pkl
+*/emb_word2vec_format.txt
+*/glove.6B.50d.txt

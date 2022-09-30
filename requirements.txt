@@ -9,3 +9,4 @@ torch
 torchtext
 gensim
 torchinfo
+torchvision

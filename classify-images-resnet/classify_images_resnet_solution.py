@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from PIL import Image
 from torchvision import transforms
+from torchinfo import summary
 
 warnings.filterwarnings('ignore')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -24,10 +25,14 @@ print(input_tensor.size())
 
 output = model(input_tensor)
 # Tensor of shape 1000, with confidence scores over Imagenet's 1000 classes
-print(output[0][:5])
 # The output has unnormalized scores. To get probabilities, you can run a softmax on it.
 probabilities_bear = torch.nn.functional.softmax(output[0], dim=0)
 probabilities_condor = torch.nn.functional.softmax(output[1], dim=0)
+
+print(probabilities_bear[:5])
+print(probabilities_condor[:5])
+print(output[0][:5])
+print(summary(model))
 
 with open("imagenet_classes.txt", "r") as f:
     categories = [s.strip() for s in f.readlines()]
@@ -36,10 +41,11 @@ print('Bear')
 # Show top categories per image
 top5_prob, top5_catid = torch.topk(probabilities_bear, 5)
 for i in range(top5_prob.size(0)):
-    print(categories[top5_catid[i]], top5_prob[i].item())
+    print(f'For the category {categories[top5_catid[i]]} the probability is {top5_prob[i].item()}')
+
 
 print('Condor')
 # Show top categories per image
 top5_prob, top5_catid = torch.topk(probabilities_condor, 5)
 for i in range(top5_prob.size(0)):
-    print(categories[top5_catid[i]], top5_prob[i].item())
+    print(f'For the category {categories[top5_catid[i]]} the probability is {top5_prob[i].item()}')

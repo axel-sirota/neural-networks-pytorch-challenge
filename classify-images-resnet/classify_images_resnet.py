@@ -37,7 +37,6 @@ input_tensor = None
 input_tensor.to(device)
 
 ## END TASK 1 CODE
-print(input_tensor.size())
 
 ## Validation Task 1
 ## This is for validation only, after you finish the task feel free to remove the prints and the exit command
@@ -88,12 +87,14 @@ print('\nBear\n')
 # Show top categories per image
 top5_prob, top5_catid = None
 for i in range(top5_prob.size(0)):
-    print(categories[top5_catid[i]], top5_prob[i].item())
+    # FILL what should go in the None!
+    print(f'For the category {categories[top5_catid[i]]} the probability is {None}')
 
 print('\nCondor\n')
 # Show top categories per image
 top5_prob, top5_catid = None
 for i in range(top5_prob.size(0)):
-    print(categories[top5_catid[i]], top5_prob[i].item())
+    # FILL what should go in the None!
+    print(f'For the category {categories[top5_catid[i]]} the probability is {None}')
 
 ## END TASK 3 CODE

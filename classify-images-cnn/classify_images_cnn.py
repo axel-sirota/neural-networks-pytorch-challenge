@@ -28,14 +28,12 @@ transform = transforms.Compose([
 
 ## INSERT TASK 1 CODE HERE
 
-raw_train_set = datasets.MNIST('./data', train=True, download=True,
-                               transform=transform)
-raw_test_set = datasets.MNIST('./data', train=False, download=True,
-                              transform=transform)
+raw_train_set = None
+raw_test_set = None
 train_set = torch.utils.data.Subset(raw_train_set, range(0, len(raw_train_set), 5))
 test_set = torch.utils.data.Subset(raw_test_set, range(0, len(raw_test_set), 5))
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=256)
-test_loader = torch.utils.data.DataLoader(test_set, batch_size=256)
+train_loader = None
+test_loader = None
 
 ## END TASK 1 CODE
 
@@ -45,7 +43,7 @@ test_loader = torch.utils.data.DataLoader(test_set, batch_size=256)
 tensor, target = next(iter(train_loader))
 print(tensor.size())
 print(target.size())
-# exit(0)
+exit(0)
 
 ## End of validation of task 1. (please remove prints and exits after ending it)
 
@@ -63,14 +61,12 @@ print(target.size())
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(1, 16, 3, 1)
-        nn.init.normal_(self.conv1.weight, mean=0, std=1.0)
-        self.conv2 = nn.Conv2d(16, 16, 3, 1)
-        nn.init.normal_(self.conv2.weight, mean=0, std=1.0)
+        self.conv1 = None  # FILLME
+        self.conv2 = None  # FILLME
         self.dropout1 = nn.Dropout(0.25)
         self.dropout2 = nn.Dropout(0.5)
-        self.fc1 = nn.Linear(2304, 64)
-        self.fc2 = nn.Linear(64, 10)
+        self.fc1 = None  # FILLME
+        self.fc2 = None  # FILLME
 
     ## END TASK 2 CODE
 
@@ -98,7 +94,7 @@ print(summary(model))
 data, target = next(iter(train_loader))
 output = model(data)
 print(output[0][:5])
-# exit(0)
+exit(0)
 
 ## End of validation of task 2. (please remove prints and exits after ending it)
 
@@ -113,12 +109,8 @@ model.train()
 optimizer = torch.optim.AdamW(model.parameters())
 for epoch in range(1, EPOCHS + 1):
     for batch_idx, (data, target) in enumerate(train_loader):
-        data, target = data.to(device), target.to(device)
-        optimizer.zero_grad()
-        output = model(data)
-        loss = F.nll_loss(output, target)
-        loss.backward()
-        optimizer.step()
+        output = None
+        loss = None
         # Recall to execute the necessary methods such that the training loop works!
         if batch_idx % 30 == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(

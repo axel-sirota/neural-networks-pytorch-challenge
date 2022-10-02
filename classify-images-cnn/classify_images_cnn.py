@@ -21,13 +21,17 @@ transform = transforms.Compose([
 
 # Task 1: Build the train and test dataset and DataLoaders. For that you will need to:
 
-# - Download the MNIST dataset using PyToch datasets API, transforming each image according to the transform function
+# - Download the MNIST dataset using PyToch datasets API, transforming each image according to the transform function. Set these as the raw_train and raw_test sets
+# We will do this because we will use Subset to only use a subset of images to make it run faster
+
 # - Create dataloaders out of the test and train set with a batch size of 256 images
 
 ## INSERT TASK 1 CODE HERE
 
-train_set = None
-test_set = None
+raw_train_set = None
+raw_test_set = None
+train_set = torch.utils.data.Subset(raw_train_set, range(0, len(raw_train_set), 5))
+test_set = torch.utils.data.Subset(raw_test_set, range(0, len(raw_test_set), 5))
 train_loader = None
 test_loader = None
 
@@ -116,7 +120,6 @@ for epoch in range(1, EPOCHS + 1):
 
 ## END TASK 3 CODE
 
-torch.save(model.state_dict(), "mnist_cnn.pt")
 model.eval()
 test_loss = 0
 correct = 0
@@ -132,3 +135,4 @@ test_loss /= len(test_loader.dataset)
 print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
     test_loss, correct, len(test_loader.dataset),
     100. * correct / len(test_loader.dataset)))
+torch.save(model.state_dict(), "mnist_cnn.pt")

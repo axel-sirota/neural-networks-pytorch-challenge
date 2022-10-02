@@ -18,17 +18,20 @@ transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.1307,), (0.3081,))
 ])
-dataset1 = datasets.MNIST('./data', train=True, download=True,
-                          transform=transform)
-dataset2 = datasets.MNIST('./data', train=False, download=True,
-                          transform=transform)
-train_loader = torch.utils.data.DataLoader(dataset1, batch_size=256)
-test_loader = torch.utils.data.DataLoader(dataset2, batch_size=256)
+raw_train_set = datasets.MNIST('./data', train=True, download=True,
+                               transform=transform)
+raw_test_set = datasets.MNIST('./data', train=False, download=True,
+                              transform=transform)
+train_set = torch.utils.data.Subset(raw_train_set, range(0, len(raw_train_set), 5))
+test_set = torch.utils.data.Subset(raw_test_set, range(0, len(raw_test_set), 5))
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=256)
+test_loader = torch.utils.data.DataLoader(test_set, batch_size=256)
 
 for tensor, target in train_loader:
     print(tensor.size())
     print(target.size())
     break
+
 
 ## 2. Create CNN and test it out
 
@@ -60,7 +63,6 @@ class Net(nn.Module):
 
 
 model = Net().to(device)
-model.train()
 
 print(summary(model))
 for data, target in train_loader:
@@ -70,6 +72,7 @@ for data, target in train_loader:
 
 ## 3. Train the network on MNIST dataset
 
+model.train()
 optimizer = torch.optim.AdamW(model.parameters())
 for epoch in range(1, EPOCHS + 1):
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -79,7 +82,7 @@ for epoch in range(1, EPOCHS + 1):
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
-        if batch_idx % 30 == 0:
+        if batch_idx % 10 == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                        100. * batch_idx / len(train_loader), loss.item()))

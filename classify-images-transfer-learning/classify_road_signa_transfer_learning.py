@@ -23,36 +23,77 @@ transform = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
+# Task 1: Build the train and test dataset and DataLoaders. For that you will need to:
+
+# - Load the Dataset from the images local folder
+# - Create the DataLoaders with shuffle=True and a batch size of 5
+# - Fetch all the classes from the all_data Dataset
+
+## INSERT TASK 1 CODE HERE
+
 data_dir = 'images'
-all_data = datasets.ImageFolder(os.path.join(data_dir), transform=transform)
+all_data = None
 train_set = torch.utils.data.Subset(all_data, [i for i in range(len(all_data)) if i % 5])
 test_set = torch.utils.data.Subset(all_data, [i for i in range(len(all_data)) if not i % 5])
 
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=5, shuffle=True, drop_last=True)
-test_loader = torch.utils.data.DataLoader(test_set, batch_size=5, shuffle=True, drop_last=True)
-class_names = train_set.dataset.classes
+train_loader = None
+test_loader = None
+class_names = None
 
-# Get a batch of training data
+## END TASK 1 CODE
+
+
+## Validation Task 1
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
+
 inputs, classes = next(iter(train_loader))
 print(inputs.size())
 print(classes)
+exit(0)
+
+## End of validation of task 1. (please remove prints and exits after ending it)
 
 # 2. Setting the model
 
-model = models.resnet18(weights=ResNet18_Weights.DEFAULT)
-for param in model.parameters():
-    param.requires_grad = False
-num_in_features = model.fc.in_features
-model.fc = nn.Linear(num_in_features, len(classes))
-model = model.to(device)
+# Task 2: We will create the model, using as feature extractor ResNet 18, making the parameters non-trainable, and then adding a simple FC layer to our classes. For that you will need to:
 
-loss_function = nn.CrossEntropyLoss()
+# - Download the resnet18 weights from PyTorchHub
+# - Setting the model parameters as non-trainable
+# - Add a Linear FC layer mapping to our road sign classes
+# - Set the appropriate loss (consider this model will not have a Softmax)
+# - Finally set the optimizer as ab SGD such that only the last layer's parameters are changed on each step()
+
+## INSERT TASK 2 CODE HERE
+
+model = None
+for param in model.parameters():
+    ## FILLME
+    pass
+model = None
+
+loss_function = None
+
+
+optimizer_ft = None
+
+## END TASK 2 CODE
+## Validation Task 2
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
+
 
 summary(model)
+print(model(inputs).size())
+exit(0)
 
-optimizer_ft = optim.SGD(model.fc.parameters(), lr=0.01, momentum=0.9)
+## End of validation of task 2. (please remove prints and exits after ending it)
 
-# 3. Building the training  routine
+# 3. Building the training routine
+
+# Task 3: This time you will fill in the code to do the appropriate bookkeeping to know the running loss and accuracy. You will:
+
+# - Calculate the running loss per batch as well as the amount on corrects
+# - Calculate the Epoch loss an accuracy
+# - Calculate the final test accuracy
 
 best_acc = 0
 model.train()  # Set model to training mode
@@ -76,15 +117,19 @@ for epoch in range(EPOCHS):
         loss.backward()
         optimizer_ft.step()
 
+
+        ## INSERT TASK 3 CODE HERE
+
+
         # statistics
-        running_loss += loss.item() * inputs.size(0)
-        running_corrects += torch.sum(preds == labels.data)
+        running_loss += None
+        running_corrects += None
         if batch_idx % 2 == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(train_set), len(train_loader.dataset),
                        100. * batch_idx / len(train_loader), loss.item()))
-    epoch_loss = running_loss / len(train_set)
-    epoch_acc = running_corrects.double() / len(train_set)
+    epoch_loss = None
+    epoch_acc = None
 
     print(f'\nLoss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}\n')
 
@@ -103,8 +148,10 @@ for inputs, labels in test_loader:
     outputs = model(inputs)
     _, preds = torch.max(outputs, 1)
     loss = loss_function(outputs, labels)
-    test_loss += loss.item() * inputs.size(0)
-    correct += torch.sum(preds == labels.data)
+    test_loss += None
+    correct += None
+
+## END TASK 3 CODE
 
 test_loss /= len(test_loader.dataset)
 

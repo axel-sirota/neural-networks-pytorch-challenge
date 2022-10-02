@@ -131,6 +131,8 @@ for epoch in range(EPOCHS):
     epoch_loss = None
     epoch_acc = None
 
+## END TASK 3 CODE
+
     print(f'\nLoss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}\n')
 
     # deep copy the model
@@ -148,10 +150,9 @@ for inputs, labels in test_loader:
     outputs = model(inputs)
     _, preds = torch.max(outputs, 1)
     loss = loss_function(outputs, labels)
-    test_loss += None
-    correct += None
+    test_loss += loss.item() * inputs.size(0)
+    correct += torch.sum(preds == labels.data)
 
-## END TASK 3 CODE
 
 test_loss /= len(test_loader.dataset)
 

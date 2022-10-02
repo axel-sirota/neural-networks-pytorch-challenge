@@ -48,9 +48,9 @@ model = model.to(device)
 
 loss_function = nn.CrossEntropyLoss()
 
-summary(model)
-
 optimizer_ft = optim.SGD(model.fc.parameters(), lr=0.01, momentum=0.9)
+
+summary(model)
 
 # 3. Building the training  routine
 

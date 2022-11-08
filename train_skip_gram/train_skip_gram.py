@@ -17,7 +17,7 @@ torch.manual_seed(42)
 np.random.seed(42)
 
 EMBEDDING_DIM = 50
-EPOCHS = 10
+EPOCHS = 2
 BATCH_SIZE = 250
 train_size = 5000
 CORPUS_SIZE = 1000

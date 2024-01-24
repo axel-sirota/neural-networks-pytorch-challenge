@@ -1,6 +1,6 @@
 ipython<8.0,>=7.23.1
 pandas
-sklearn
+scikit-learn
 numpy
 nltk
 textblob
